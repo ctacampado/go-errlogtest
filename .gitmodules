@@ -1,0 +1,3 @@
+[submodule "toylog"]
+	path = toylog
+	url = https://github.com/ctacampado/toylog.git
