@@ -1,0 +1,7 @@
+mode: set
+go-errlogtest/internal/calculator/calculator.go:4.32,7.2 2 1
+go-errlogtest/internal/calculator/calculator.go:10.32,13.2 2 1
+go-errlogtest/internal/calculator/calculator.go:16.37,19.2 2 1
+go-errlogtest/internal/calculator/calculator.go:28.34,45.2 2 1
+go-errlogtest/internal/calculator/calculator.go:48.30,50.2 1 0
+go-errlogtest/internal/calculator/calculator.go:53.30,55.2 1 1
