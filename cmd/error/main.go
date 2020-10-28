@@ -12,9 +12,15 @@ func pdivision(a, b, c int) int {
 	return a / b / c
 }
 
-func intDiv(a, b, c int) (int, error) {
+func intDiv(a, b, c int) (int, *errs.Error) {
 	if b == 0 || c == 0 {
-		return 0, errors.New("can't divide by zero")
+		err := errs.New(
+			"intDiv",
+			"can't divide by zero",
+			arith.DIVERR,
+			arith.Args{a, b, c},
+		)
+		return 0, err
 	}
 	return a / b / c, nil
 }
@@ -43,7 +49,7 @@ func main() {
 	op := errs.Op("main")
 	eans, e := intDiv(100, 20, 1)
 	if e != nil {
-		log.Println(fmt.Errorf("division error: %w", e))
+		log.Println(fmt.Errorf("division error: %w", errors.New(e.Err)))
 	} else {
 		fmt.Printf("[%s] answer: %d\n", op, eans)
 	}
