@@ -1,7 +1,7 @@
 package arith
 
 import (
-	"errors"
+	"go-errlogtest/internal/errs"
 	"log"
 )
 
@@ -11,20 +11,22 @@ type Arg int
 // Args type
 type Args []int
 
+// Len returns the number of arguments
+func (a Args) Len() int {
+	return len(a)
+}
+
 // Quotient represents an answer to a custom division operation
 type Quotient struct {
 	Q int
 	R int
 }
 
-// ERRTYPE type
-type ERRTYPE int
-
 const (
 	// DIVERR division error
-	DIVERR ERRTYPE = iota
+	DIVERR errs.ErrType = "DIVERR"
 	// MULTERR multiplication error
-	MULTERR
+	MULTERR errs.ErrType = "MULTERR"
 )
 
 // Print prints out all values inside args
@@ -35,9 +37,14 @@ func (a *Args) Print() {
 }
 
 // Divide func
-func Divide(args Args) (Quotient, error) {
+func Divide(args Args) (Quotient, *errs.Error) {
 	if len(args) <= 1 {
-		return Quotient{}, errors.New("needs more than 1 argument")
+		return Quotient{}, errs.New(
+			"arith.Divide",
+			"needs more than 1 argument",
+			DIVERR,
+			args,
+		)
 	}
 
 	var q Quotient
@@ -46,7 +53,12 @@ func Divide(args Args) (Quotient, error) {
 			break
 		}
 		if args[i+1] == 0 {
-			return Quotient{}, errors.New("cannot divide by 0")
+			return Quotient{}, errs.New(
+				"arith.Divide",
+				"cannot divide by zero",
+				DIVERR,
+				args,
+			)
 		}
 		q.Q = v
 		q.Q /= args[i+1]
@@ -57,9 +69,14 @@ func Divide(args Args) (Quotient, error) {
 }
 
 // Multiply func
-func Multiply(args Args) (int, error) {
+func Multiply(args Args) (int, *errs.Error) {
 	if len(args) <= 1 {
-		return 0, errors.New("needs more than 1 argument")
+		return 0, errs.New(
+			"arith.Multiply",
+			"needs more than 1 argument",
+			MULTERR,
+			args,
+		)
 	}
 
 	p := 1

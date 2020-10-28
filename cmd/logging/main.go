@@ -1,44 +1,45 @@
 package main
 
 import (
-	"errors"
-	"fmt"
 	"go-errlogtest/internal/arith"
 	"go-errlogtest/internal/errs"
 	"go-errlogtest/pkg/toylog"
 )
 
-var logger = toylog.NewToyLog("Arith", toylog.ERR, false)
+var l = toylog.NewToyLog("Arith", toylog.ERR, false)
 
 func main() {
 	op := errs.Op("main")
-
-	logger.Trace("starting intDiv")
-	eans, err := intDiv(100, 20, 2)
+	eans, err := intDiv(100, 20, 0)
 	if err != nil {
-		logger.Error(fmt.Errorf("division error: %w", err).Error())
+		l.Error(errs.E(op, err).String())
 	}
-	logger.Trace("answer is %d", eans)
+	l.Info("%d", eans)
 
-	logger.Trace("starting arith.Divide")
 	args := arith.Args{100, 0}
 	ans, err := arith.Divide(args)
 	if err != nil {
-		logger.Error(errs.E(op, arith.DIVERR, err, args).String())
+		newe := errs.E(op, err)
+		l.Error(newe.String())
 	}
-	logger.Info("answer is %+v", ans)
+	l.Info("%+v", ans)
 
-	logger.Trace("starting multdiv")
-	ans, e := multdiv(300, 10, 0)
-	if e != nil {
-		logger.Error(errs.E(op, e).String())
+	ans, err = multdiv(300, 10, 0)
+	if err != nil {
+		l.Error(errs.E(op, err).String())
 	}
-	logger.Info("answer is %+v", ans)
+	l.Info("%+v", ans)
 }
 
-func intDiv(a, b, c int) (int, error) {
+func intDiv(a, b, c int) (int, *errs.Error) {
 	if b == 0 || c == 0 {
-		return 0, errors.New("can't divide by zero")
+		err := errs.New(
+			"intDiv",
+			"can't divide by zero",
+			arith.DIVERR,
+			arith.Args{a, b, c},
+		)
+		return 0, err
 	}
 	return a / b / c, nil
 }
@@ -50,16 +51,16 @@ func multdiv(a, b, c int) (arith.Quotient, *errs.Error) {
 
 	pargs := arith.Args{a, b}
 	p, err := arith.Multiply(pargs)
-	logger.Debug("args:%+v p: %d", pargs, p)
+	l.Debug("args:%+v p: %d", pargs, p)
 	if err != nil {
-		return ans, errs.E(op, arith.MULTERR, pargs, err)
+		return ans, errs.E(op, err)
 	}
 
 	qargs := arith.Args{p, c}
 	ans, err = arith.Divide(qargs)
-	logger.Debug("args:%+v p: %d", qargs, ans)
+	l.Debug("args:%+v p: %d", qargs, ans)
 	if err != nil {
-		return ans, errs.E(op, arith.DIVERR, qargs, err)
+		return ans, errs.E(op, err)
 	}
 	return ans, nil
 }
