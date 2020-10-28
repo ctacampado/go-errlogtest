@@ -47,22 +47,22 @@ func New(o Op, e string, k ErrType, a ErrArgs) *Error {
 
 // Print the error
 func (e Error) String() string {
-	jStack, err := json.Marshal(e.OpStack)
+	jsonStack, err := json.Marshal(e.OpStack)
 	if err != nil {
-		jStack = []byte(err.Error())
+		jsonStack = []byte(err.Error())
 	}
 
-	jArgs, _ := json.Marshal(e.Args)
+	jsonArgs, _ := json.Marshal(e.Args)
 	if err != nil {
-		jArgs = []byte(err.Error())
+		jsonArgs = []byte(err.Error())
 	}
 
 	return fmt.Sprintf(
 		"{\"stack\":%v,\"type\":\"%s\",\"err\":\"%s\",\"args\":%v}",
-		string(jStack),
+		string(jsonStack),
 		e.Kind,
 		e.Err,
-		string(jArgs),
+		string(jsonArgs),
 	)
 }
 
