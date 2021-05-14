@@ -52,17 +52,18 @@ func (e Error) String() string {
 		jsonStack = []byte(err.Error())
 	}
 
-	jsonArgs, _ := json.Marshal(e.Args)
-	if err != nil {
-		jsonArgs = []byte(err.Error())
-	}
+	/*
+		jsonArgs, _ := json.Marshal(e.Args)
+		if err != nil {
+			jsonArgs = []byte(err.Error())
+		}*/
 
 	return fmt.Sprintf(
-		"{\"stack\":%v,\"type\":\"%s\",\"err\":\"%s\",\"args\":%v}",
+		"{\"stack\":%v,\"type\":\"%s\",\"err\":\"%s\",\"args\":%+v}",
 		string(jsonStack),
 		e.Kind,
 		e.Err,
-		string(jsonArgs),
+		e.Args,
 	)
 }
 
